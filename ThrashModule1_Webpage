@@ -1,0 +1,36 @@
+import json
+import requests
+
+def lambda_handler(event, context):
+    # Lambda로 전달된 원본 데이터
+    original_data = event
+
+    # Postman Mock 서버 URL
+    url = "https://7c7e69be-30fa-4d52-a4d7-09afe5325cad.mock.pstmn.io/test"
+
+    try:
+        # HTTP POST 요청
+        response = requests.post(url, json=original_data, headers={"Content-Type": "application/json"})
+
+        # 로그 출력
+        print(f"Original Data: {json.dumps(original_data)}")
+        print(f"Response Status Code: {response.status_code}")
+        print(f"Response Body: {response.text}")
+
+        return {
+            "statusCode": response.status_code,
+            "body": json.dumps({
+                "message": "Data sent successfully",
+                "response": response.text
+            })
+        }
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "Failed to send data",
+                "error": str(e)
+            })
+        }
